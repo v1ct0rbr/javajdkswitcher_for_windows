@@ -1,70 +1,85 @@
-# Caminho do arquivo de propriedades
+# Caminho do programa. Deve ser alterado para o local correto onde se encontra os scripts.
 #Set-Location "D:\programas\WinJavaSwitcher"
-
-$arquivoPropriedades = ".\jdk.properties"
+$PSScriptRoot = $args[0]
+# Caminho do arquivo de propriedades
+$arquivoPropriedades = "$PSScriptRoot\jdk.properties"
 
 if (-Not (Test-Path $arquivoPropriedades)) {
-    Write-Error "Erro: Arquivo de propriedades nao encontrado: $arquivoPropriedades"
-   
+    Write-Error "Erro - Arquivo de propriedades nao encontrado: $arquivoPropriedades"
+    exit 1
 }
 
-# Lê o arquivo e cria um mapa dos JDKs, limpando os caminhos
-$mapaJDKs = @{}
-Get-Content $arquivoPropriedades | ForEach-Object {
-    if ($_ -match "^\s*([^#][^=]+?)\s*=\s*(.+)$") {
-        $key = $matches[1].Trim()
-        $value = $matches[2].Trim() -replace '[`"\uFEFF\u200B]', ''
-        $mapaJDKs[$key] = $value
+# Lê o arquivo e cria um mapa dos JDKs
+function Carregar-JDKs {
+    $mapa = @{}
+    Get-Content $arquivoPropriedades | ForEach-Object {
+        if ($_ -match "^\s*([^#][^=]+?)\s*=\s*(.+)$") {
+            $key = $matches[1].Trim()
+            $value = $matches[2].Trim() -replace '[`"\uFEFF\u200B]', ''
+            $mapa[$key] = $value
+        }
+    }
+    return $mapa
+}
+
+function Atualizar-Java($javaPath) {
+    $javaBin = Join-Path $javaPath "bin"
+
+    if (-Not (Test-Path $javaBin)) {
+        Write-Error "Erro: Caminho invalido: $javaBin"
+        return
+    }
+
+    try {
+        [Environment]::SetEnvironmentVariable("JAVA_HOME", $javaPath, "Machine")
+
+        $pathAtual = [Environment]::GetEnvironmentVariable("Path", "Machine")
+        $pathNovo = $pathAtual -split ";" | Where-Object { $_ -notmatch "jdk" -and $_.Trim() -ne "" }
+        $novoPath = "$javaBin;" + ($pathNovo -join ";")
+        [Environment]::SetEnvironmentVariable("Path", $novoPath, "Machine")
+
+        Write-Host "`nSucesso JAVA_HOME e PATH atualizados para: $javaPath"
+        & "$javaBin\java.exe" -version
+    }
+    catch {
+        Write-Error "Erro: Execute este script como Administrador."
     }
 }
 
+# Loop de menu
+do {
+    $jdks = Carregar-JDKs
 
-if ($mapaJDKs.Count -eq 0) {
-    Write-Error "Erro: Nenhuma versao encontrada no arquivo de propriedades."
-   
-}
+    if ($jdks.Count -eq 0) {
+        Write-Error "Nenhuma JDK encontrada no arquivo de propriedades."
+        break
+    }
 
-Write-Host "`nSelecione a versao do Java para ativar:`n"
+    Write-Host "`nSelecione a versao do Java para ativar:`n"
+    $opcoes = @()
+    $index = 1
 
-# Mostra menu corretamente
-$opcoes = @()
-$index = 1
-$mapaJDKs.GetEnumerator() | Sort-Object Key | ForEach-Object {
-    Write-Host "$index - $($_.Key) => $($_.Value)"
-    $opcoes += @{ Key = $_.Key; Caminho = $_.Value }
-    $index++
-}
+    $jdks.GetEnumerator() | Sort-Object Key | ForEach-Object {
+        Write-Host "$index - $($_.Key) => $($_.Value)"
+        $opcoes += @{ Key = $_.Key; Caminho = $_.Value }
+        $index++
+    }
 
-# Coleta entrada
-$escolha = Read-Host "`nDigite o numero da versao desejada"
-if ($escolha -notmatch '^\d+$' -or [int]$escolha -lt 1 -or [int]$escolha -gt $opcoes.Count) {
-    Write-Error "Erro: Escolha invalida."
-   
-}
+    Write-Host "0 - Sair"
 
-$selecionado = $opcoes[[int]$escolha - 1]
-$novoJava = $selecionado.Caminho
-$novoJavaBin = Join-Path $novoJava "bin"
+    $escolha = Read-Host "`nDigite o numero da versao desejada"
+    if ($escolha -eq '0') {
+        Write-Host "`nSaindo..."
+        break
+    }
 
-if (-Not (Test-Path $novoJavaBin)) {
-    Write-Error "Erro: Caminho invalido para bin: $novoJavaBin"
-    
-}
+    if ($escolha -notmatch '^\d+$' -or [int]$escolha -lt 1 -or [int]$escolha -gt $opcoes.Count) {
+        Write-Error "Erro: Escolha invalida."
+        continue
+    }
 
-# Verifica se tem permissão para alterar o registro
-try {
-    [Environment]::SetEnvironmentVariable("JAVA_HOME", $novoJava, "Machine")
-    $pathAtual = [Environment]::GetEnvironmentVariable("Path", "Machine")
-    $pathNovo = $pathAtual -split ";" | Where-Object { $_ -notmatch "jdk" -and $_.Trim() -ne "" }
-    $novoPath = "$novoJavaBin;" + ($pathNovo -join ";")
-    [Environment]::SetEnvironmentVariable("Path", $novoPath, "Machine")
+    $selecionado = $opcoes[[int]$escolha - 1]
+    Atualizar-Java $selecionado.Caminho
 
-    Write-Host "`nSucesso: JAVA_HOME e PATH atualizados para $($selecionado.Key)"
-    & "$novoJavaBin\java.exe" -version
-}
-catch {
-    Write-Error "Erro: Falha ao aplicar as alteracoes. Execute este script como **Administrador**."
-    
-}
-
-Read-Host -Prompt "Press Enter to exit"
+    Write-Host "`nVoltando ao menu..."
+} while ($true)

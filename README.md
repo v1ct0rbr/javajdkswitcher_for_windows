@@ -4,7 +4,7 @@ WinJavaSwitcher é um script para alternar rapidamente entre diferentes versões
 
 ## Recursos
 
-- Alternância rápida entre versões do Java.
+- Alternância rápida entre versões do Java como um menu interativo.
 - Configuração simples e fácil de usar.
 - Compatível com Windows.
 
@@ -12,8 +12,6 @@ WinJavaSwitcher é um script para alternar rapidamente entre diferentes versões
 
 - Sistema operacional Windows.
 - Instalações prévias das versões do Java que deseja alternar.
-- Crie vários arquivos baseados no arquivo winjavaswitcher.ps1
-- cada arquivo deve possuir seu caminho para a versão do jdk desejado
 
 
 
@@ -21,20 +19,22 @@ WinJavaSwitcher é um script para alternar rapidamente entre diferentes versões
 
 1. Clone este repositório:
     ```bash
-    git clone https://github.com/seu-usuario/WinJavaSwitcher.git
+    git clone https://github.com/v1ct0rbr/WinJavaSwitcher.git
     ```
 2. Navegue até o diretório do script:
     ```bash
     cd WinJavaSwitcher
     ```
-3. Certifique-se de que o script está configurado corretamente para as versões do Java instaladas.
+3. Reescreva o arquivo run_as_admin modificando a variável localScriptDir para o caminho completo do projeto 
+4. Renomeie ou copie o arquivo jdk.example.properties para jdk.properties
+5. Insira todos os caminhos das jdk's que você tiver disponível em sua máquina (siga o padrao do arquivo)
 
 ## Uso
 
-1. Rode primeiramente o arquivo pre_scripts.bat para dar permissão necessária a execução dos demais scripts.
-2. Execute o script no terminal (Deve apontar para a JDK previamente):
+1. Rode primeiramente o arquivo pre_run_as_admin.bat para dar permissão necessária a execução dos demais scripts.
+2. Execute o script como administrador:
     ```bash
-    WinJavaSwitcher.bat
+    run_as_admin.bat
     ```
 3. Escolha a versão do Java que deseja usar no menu interativo.
 4. O script ajustará automaticamente as variáveis de ambiente para a versão selecionada.
@@ -49,4 +49,4 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 
 ## Autor
 
-Desenvolvido por [Seu Nome].
+Desenvolvido por Victor Queiroga.
