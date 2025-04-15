@@ -31,7 +31,10 @@ WinJavaSwitcher é um script para alternar rapidamente entre diferentes versões
 
 ## Uso
 
-1. Rode primeiramente o arquivo pre_run_as_admin.bat para dar permissão necessária a execução dos demais scripts.
+1. Rode primeiramente o script para encontrar a localização do projeto.
+    ```base
+    fix_project_path.bat
+    ```
 2. Execute o script como administrador:
     ```bash
     run_as_admin.bat

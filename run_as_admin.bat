@@ -1,10 +1,7 @@
-@echo off
-
-:: set /p localScriptDir="D:\programas\WinJavaSwitcher"
-set "localScriptDir=D:\programas\WinJavaSwitcher"
-
-powershell -ExecutionPolicy Bypass -File "%localScriptDir%\winjavaswitcher.ps1" "%localScriptDir%" -NoExit 
-
-:: Não fechar o console
-
-pause
+@echo off     
+Set-ExecutionPolicy RemoteSigned -Scope LocalMachine     
+:: set /p localScriptDir="D:\programas\WinJavaSwitcher"     
+set "localScriptDir=D:\programas\WinJavaSwitcher" 
+powershell -ExecutionPolicy Bypass -File "%localScriptDir%\winjavaswitcher.ps1" "%localScriptDir%" -NoExit      
+:: Não fechar o console     
+pause     

@@ -2,7 +2,14 @@
 # Autor: Victor Queiroga
 # Data: 2025-04-15
 # Licença: MIT
-
+$currentIdentity = [Security.Principal.WindowsIdentity]::GetCurrent()
+$principal = New-Object Security.Principal.WindowsPrincipal($currentIdentity)
+$admin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $admin) {
+    Write-Host "Atencao: Este script precisa ser executado como Administrador. Fechando..."
+    Write-Host "Para executar como Administrador, clique com o botao direito no arquivo e selecione 'Executar como administrador'."
+    exit
+}
 
 $PSScriptRoot = $args[0]
 # Caminho do arquivo de propriedades
@@ -59,6 +66,7 @@ do {
         Write-Error "Nenhuma JDK encontrada no arquivo de propriedades."
         break
     }
+    Write-Host "`n==============================================`n"
 
     Write-Host "`nSelecione a versao do Java para ativar:`n"
     $opcoes = @()
@@ -73,6 +81,8 @@ do {
     Write-Host "0 - Sair"
 
     $escolha = Read-Host "`nDigite o numero da versao desejada"
+
+    Write-Host "`n==============================================`n"
     if ($escolha -eq '0') {
         Write-Host "`nSaindo..."
         break
