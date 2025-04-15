@@ -25,9 +25,8 @@ WinJavaSwitcher é um script para alternar rapidamente entre diferentes versões
     ```bash
     cd WinJavaSwitcher
     ```
-3. Reescreva o arquivo run_as_admin modificando a variável localScriptDir para o caminho completo do projeto 
-4. Renomeie ou copie o arquivo jdk.example.properties para jdk.properties
-5. Insira todos os caminhos das jdk's que você tiver disponível em sua máquina (siga o padrao do arquivo)
+3. Renomeie ou copie o arquivo jdk.example.properties para jdk.properties
+4. Insira todos os caminhos das jdk's que você tiver disponível em sua máquina (siga o padrao do arquivo)
 
 ## Uso
 
