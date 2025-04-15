@@ -1,5 +1,9 @@
-# Caminho do programa. Deve ser alterado para o local correto onde se encontra os scripts.
-#Set-Location "D:\programas\WinJavaSwitcher"
+# Script para alternar entre diferentes JDKs no Windows
+# Autor: Victor Queiroga
+# Data: 2025-04-15
+# Licença: MIT
+
+
 $PSScriptRoot = $args[0]
 # Caminho do arquivo de propriedades
 $arquivoPropriedades = "$PSScriptRoot\jdk.properties"
@@ -22,6 +26,7 @@ function Carregar-JDKs {
     return $mapa
 }
 
+# Atualiza JAVA_HOME e PATH
 function Atualizar-Java($javaPath) {
     $javaBin = Join-Path $javaPath "bin"
 
