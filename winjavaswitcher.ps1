@@ -2,6 +2,7 @@
 # Autor: Victor Queiroga
 # Data: 2025-04-15
 # Licença: MIT
+
 $currentIdentity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $principal = New-Object Security.Principal.WindowsPrincipal($currentIdentity)
 $admin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -97,4 +98,7 @@ do {
     Atualizar-Java $selecionado.Caminho
 
     Write-Host "`nVoltando ao menu..."
+    Start-Sleep -Seconds 2
+    Clear-Host
+    
 } while ($true)
