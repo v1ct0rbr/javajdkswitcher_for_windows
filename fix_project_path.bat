@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-Set-ExecutionPolicy RemoteSigned -Scope LocalMachine 
+
 :: Configurações
 set "arquivo=run_as_admin.bat"
 set "diretorioAtual=%~dp0"
