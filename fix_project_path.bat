@@ -1,3 +1,6 @@
+:: Este script corrige o caminho do diretório atual em um arquivo .bat
+:: caminho do diretório atual é obtido automaticamente e substitui o caminho fixo no arquivo .bat
+
 @echo off
 setlocal enabledelayedexpansion
 
